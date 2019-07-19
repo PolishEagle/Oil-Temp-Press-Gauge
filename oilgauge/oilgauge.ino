@@ -1,4 +1,5 @@
 #include <SPI.h>
+#include "LedDriver.h"
 
 // PD4 - temp LED enable
 // PD2 - temp LED driver enable
@@ -11,6 +12,7 @@
 
 void setup()
 {
+    Serial.end();
     pinMode(TEMP_LED_EN, OUTPUT);
     pinMode(TEMP_DRIVER_EN, OUTPUT);
     pinMode(PRESS_LED_EN, OUTPUT);
@@ -18,65 +20,14 @@ void setup()
     
     digitalWrite(TEMP_DRIVER_EN, LOW);
     digitalWrite(PRES_DRIVER_EN, LOW);
-
-    delay(1000);
-
+    
     digitalWrite(TEMP_LED_EN, HIGH);
-    digitalWrite(TEMP_DRIVER_EN, HIGH);
-
-    // take the chip select low to select the device:
-    digitalWrite(PRES_DRIVER_EN, LOW);
-    
-    SPI.transfer(0x82);
-    SPI.transfer(0x05);
-    SPI.transfer(0x00);
-    
-    // take the chip select high to de-select:
-    digitalWrite(PRES_DRIVER_EN, HIGH);
-
-
-
-    delay(100);
-
-    // take the chip select low to select the device:
-    digitalWrite(PRES_DRIVER_EN, LOW);
-    
-    SPI.transfer(0x82);
-    SPI.transfer(0x06);
-    SPI.transfer(0x00);
-    
-    // take the chip select high to de-select:
-    digitalWrite(PRES_DRIVER_EN, HIGH);
-
-
-
-    delay(100);
-
-    // take the chip select low to select the device:
-    digitalWrite(PRES_DRIVER_EN, LOW);
-    
-    SPI.transfer(0x82);
-    SPI.transfer(0x07);
-    SPI.transfer(0x00);
-    
-    // take the chip select high to de-select:
-    digitalWrite(PRES_DRIVER_EN, HIGH);
-
-
-
-    delay(100);
-
-    // take the chip select low to select the device:
-    digitalWrite(PRES_DRIVER_EN, LOW);
-    
-    SPI.transfer(0x82);
-    SPI.transfer(0x08);
-    SPI.transfer(0x00);
-    
-    // take the chip select high to de-select:
-    digitalWrite(PRES_DRIVER_EN, HIGH);
+    //digitalWrite(PRESS_LED_EN, HIGH);
+    SPI.begin();
 }
 
 void loop()
 {
+    delay(3000);
 }
+
