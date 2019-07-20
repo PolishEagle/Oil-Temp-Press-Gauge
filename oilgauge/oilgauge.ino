@@ -10,24 +10,40 @@
 #define PRESS_LED_EN 1
 #define PRES_DRIVER_EN 2
 
+LedDriver _oilTempLedDriver;
+LedDriver _oilPressLedDriver;
+
 void setup()
 {
     Serial.end();
     pinMode(TEMP_LED_EN, OUTPUT);
     pinMode(TEMP_DRIVER_EN, OUTPUT);
     pinMode(PRESS_LED_EN, OUTPUT);
-    pinMode(PRESS_LED_EN, OUTPUT);
+    pinMode(PRES_DRIVER_EN, OUTPUT);
     
     digitalWrite(TEMP_DRIVER_EN, LOW);
     digitalWrite(PRES_DRIVER_EN, LOW);
     
     digitalWrite(TEMP_LED_EN, HIGH);
-    //digitalWrite(PRESS_LED_EN, HIGH);
+    digitalWrite(PRESS_LED_EN, HIGH);
     SPI.begin();
+
+    _oilTempLedDriver.InitializeDriver(
+        0x00,
+        TEMP_DRIVER_EN);
+
+    _oilPressLedDriver.InitializeDriver(
+        0x02,
+        PRES_DRIVER_EN);
 }
 
 void loop()
 {
-    delay(3000);
+    for (int i = 0; i < 999; i++)
+    {
+        _oilTempLedDriver.DisplayNumber(i);
+        _oilPressLedDriver.DisplayNumber(999 - i);
+        delay(100);
+    }
 }
 

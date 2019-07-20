@@ -9,11 +9,18 @@ class LedDriver
         byte _driverAddress;
         int _driverChipSelect;
 
-        void SendData(byte data[]);
+        void SetDefaultLedCurrent();
+        void SetDefaultLedOnOff();
+        void SetDefaultLedOutputPriority();
+        void SetDefaultLedFadeFunction();
+        void SetDefaultLedCompulsionValue();
+        void SetDefaultLedPwmDuty();
+        void Setup();
+        void SendData(byte data[], int arraySize);
 
     public:
-        InitializeDriver(byte address, int driverChipSelect);
-        void Setup();
+        void InitializeDriver(byte address, int driverChipSelect);
+        void DisplayNumber(int number);
 };
 
 #endif
