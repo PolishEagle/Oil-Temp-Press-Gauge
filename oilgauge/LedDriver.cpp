@@ -33,9 +33,18 @@ void LedDriver::DisplayNumber(int number)
         digits[i] = number % 10;
         number /= 10;
     }
+
+    byte digit2 = digits[2] == 0 ? 0x00 : segmentValue[digits[2]];
+    byte digit1 = digits[2] == 0 && digits[1] == 0 ? 0x00 : segmentValue[digits[1]];
+    byte digit0 = segmentValue[digits[0]];
     
-    byte data[] = { _driverAddress, 0x12, segmentValue[digits[2]], segmentValue[digits[1]], segmentValue[digits[0]] };
+    byte data[] = { _driverAddress, 0x12, digit2, digit1, digit0 };
     SendData(data, 5);
+}
+
+void LedDriver::SetBrightness(byte level)
+{
+    SetDefaultLedCurrent(level);
 }
 
 void LedDriver::Setup()
@@ -48,15 +57,15 @@ void LedDriver::Setup()
     SetDefaultLedPwmDuty();
 }
 
-void LedDriver::SetDefaultLedCurrent()
+void LedDriver::SetDefaultLedCurrent(byte level = 0)
 {
     bool isMaster = _driverAddress & 0x1F == 0;
 
     // Set LED current for all
     byte data[] = { _driverAddress, 0x00, isMaster ? 0x00 : 0x02, 0x0,
-        0x0,  // RLED 4:0 current value
-        0x0,  // GLED 4:0 current value
-        0x0,  // BLED 4:0 current value
+        level,  // RLED 4:0 current value
+        level,  // GLED 4:0 current value
+        level,  // BLED 4:0 current value
     };
     SendData(data, 7);
 }

@@ -35,15 +35,18 @@ void setup()
     _oilPressLedDriver.InitializeDriver(
         0x02,
         PRES_DRIVER_EN);
+
+    _oilTempLedDriver.SetBrightness(0x0B);
+    _oilPressLedDriver.SetBrightness(0x0B);
 }
 
 void loop()
 {
-    for (int i = 0; i < 999; i++)
+    for (int i = 0; i < 189; i++)
     {
         _oilTempLedDriver.DisplayNumber(i);
-        _oilPressLedDriver.DisplayNumber(999 - i);
-        delay(100);
+        _oilPressLedDriver.DisplayNumber(i);
+        delay(150);
     }
 }
 

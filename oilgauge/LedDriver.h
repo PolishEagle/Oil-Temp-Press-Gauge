@@ -9,7 +9,7 @@ class LedDriver
         byte _driverAddress;
         int _driverChipSelect;
 
-        void SetDefaultLedCurrent();
+        void SetDefaultLedCurrent(byte level = 0);
         void SetDefaultLedOnOff();
         void SetDefaultLedOutputPriority();
         void SetDefaultLedFadeFunction();
@@ -21,6 +21,7 @@ class LedDriver
     public:
         void InitializeDriver(byte address, int driverChipSelect);
         void DisplayNumber(int number);
+        void SetBrightness(byte level);
 };
 
 #endif
