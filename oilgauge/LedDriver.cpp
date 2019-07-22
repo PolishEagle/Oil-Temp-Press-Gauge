@@ -61,6 +61,13 @@ void LedDriver::SetDefaultLedCurrent(byte level = 0)
 {
     bool isMaster = _driverAddress & 0x1F == 0;
 
+    // LED's can only take an absolute max of 25mA
+    // So we'll limit them to 24mA max.
+    if (level > 0x18)
+    {
+        level = 0x18;
+    }
+
     // Set LED current for all
     byte data[] = { _driverAddress, 0x00, isMaster ? 0x00 : 0x02, 0x0,
         level,  // RLED 4:0 current value

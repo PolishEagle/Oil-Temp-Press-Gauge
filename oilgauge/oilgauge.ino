@@ -1,5 +1,7 @@
 #include <SPI.h>
 #include "LedDriver.h"
+#include "OilPressureSensor.h"
+#include "OilTemperatureSensor.h"
 
 // PD4 - temp LED enable
 // PD2 - temp LED driver enable
@@ -12,6 +14,8 @@
 
 LedDriver _oilTempLedDriver;
 LedDriver _oilPressLedDriver;
+OilTemperatureSensor _oilTemperatureSensor;
+OilPressureSensor _oilPressureSensor;
 
 void setup()
 {
@@ -23,9 +27,6 @@ void setup()
     
     digitalWrite(TEMP_DRIVER_EN, LOW);
     digitalWrite(PRES_DRIVER_EN, LOW);
-    
-    digitalWrite(TEMP_LED_EN, HIGH);
-    digitalWrite(PRESS_LED_EN, HIGH);
     SPI.begin();
 
     _oilTempLedDriver.InitializeDriver(
@@ -36,17 +37,18 @@ void setup()
         0x02,
         PRES_DRIVER_EN);
 
-    _oilTempLedDriver.SetBrightness(0x0B);
-    _oilPressLedDriver.SetBrightness(0x0B);
+    // 0x18 is the max output (24mA)
+    _oilTempLedDriver.SetBrightness(0x01);
+    _oilPressLedDriver.SetBrightness(0x01);
 }
 
 void loop()
 {
-    for (int i = 0; i < 189; i++)
-    {
-        _oilTempLedDriver.DisplayNumber(i);
-        _oilPressLedDriver.DisplayNumber(i);
-        delay(150);
-    }
+    _oilTempLedDriver.DisplayNumber(
+        _oilTemperatureSensor.GetTemperature());
+    _oilPressLedDriver.DisplayNumber(
+        _oilPressureSensor.GetPressure());
+
+    delay(500);
 }
 
