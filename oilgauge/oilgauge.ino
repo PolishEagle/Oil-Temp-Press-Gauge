@@ -49,6 +49,6 @@ void loop()
     _oilPressLedDriver.DisplayNumber(
         _oilPressureSensor.GetPressure());
 
-    delay(500);
+    delay(750);
 }
 

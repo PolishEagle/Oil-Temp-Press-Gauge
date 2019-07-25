@@ -13,30 +13,36 @@ void LedDriver::InitializeDriver(
 
 void LedDriver::DisplayNumber(int number)
 {
-    byte segmentValue[] = {
-        0x3F,
-        0x06,
-        0x5B,
-        0x4F,
-        0x66,
-        0x6D,
-        0x7D,
-        0x07,
-        0x7F,
-        0x6F
-    };
-
     byte digits[] = { 0x0, 0x0, 0x0 };
+    bool isNegative = false;
+    
+    if (number < 0)
+    {
+        isNegative = true;
+        number *= -1;
+    }
 
     for (int i = 0; i < 3; i++)
     {
         digits[i] = number % 10;
         number /= 10;
     }
+    
+    byte digit2 = digits[2] == 0 ? 0x00 : _segmentValue[digits[2]];
+    byte digit1 = digits[2] == 0 && digits[1] == 0 ? 0x00 : _segmentValue[digits[1]];
+    byte digit0 = _segmentValue[digits[0]];
 
-    byte digit2 = digits[2] == 0 ? 0x00 : segmentValue[digits[2]];
-    byte digit1 = digits[2] == 0 && digits[1] == 0 ? 0x00 : segmentValue[digits[1]];
-    byte digit0 = segmentValue[digits[0]];
+    if (isNegative)
+    {
+        if (digits[2] == 0 && digits[1] != 0)
+        {
+            digit2 = _negativeValue;
+        }
+        else if (digits[2] == 0 && digits[1] == 0 && digits[0] != 0)
+        {
+            digit1 = _negativeValue;
+        }
+    }
     
     byte data[] = { _driverAddress, 0x12, digit2, digit1, digit0 };
     SendData(data, 5);
