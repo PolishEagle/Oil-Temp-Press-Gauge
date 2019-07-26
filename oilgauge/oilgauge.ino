@@ -34,7 +34,7 @@ void setup()
         TEMP_DRIVER_EN);
 
     _oilPressLedDriver.InitializeDriver(
-        0x02,
+        0x01,
         PRES_DRIVER_EN);
 
     // 0x18 is the max output (24mA)
@@ -44,11 +44,23 @@ void setup()
 
 void loop()
 {
+    // Reset the LED brightness
+    _oilTempLedDriver.SetBrightness(0x01);
+    _oilPressLedDriver.SetBrightness(0x01);
+
+    int pressure = _oilPressureSensor.GetPressure();
+  
     _oilTempLedDriver.DisplayNumber(
         _oilTemperatureSensor.GetTemperature());
-    _oilPressLedDriver.DisplayNumber(
-        _oilPressureSensor.GetPressure());
+    _oilPressLedDriver.DisplayNumber(pressure);
 
-    delay(750);
+    delay(150);
+
+    if (pressure <= 20 && pressure > 0)
+    {
+        _oilTempLedDriver.SetBrightness(0x16);
+        _oilPressLedDriver.SetBrightness(0x16);
+    }
+    
+    delay(150);
 }
-

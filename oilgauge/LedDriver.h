@@ -35,6 +35,7 @@ class LedDriver
         void InitializeDriver(byte address, int driverChipSelect);
         void DisplayNumber(int number);
         void SetBrightness(byte level);
+        void OhNoz();
 };
 
 #endif

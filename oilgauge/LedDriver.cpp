@@ -5,10 +5,30 @@ void LedDriver::InitializeDriver(
     int driverChipSelect)
 {
     // Need to bit shift the address over 1 since 0 isn't used
-    _driverAddress = 0x80 | address;
+    _driverAddress = 0x80 | (address << 1);
     _driverChipSelect = driverChipSelect;
 
     Setup();
+}
+
+void LedDriver::OhNoz()
+{
+    byte digit2, digit1, digit0;
+    if (((_driverAddress >> 1) & 0x1) == 0x0)
+    {
+        digit2 = 0x7c;
+        digit1 = 0x50;
+        digit0 = 0x5c;
+    }
+    else
+    {
+        digit2 = 0x5e;
+        digit1 = 0x79;
+        digit0 = 0x5e;
+    }
+    
+    byte data[] = { _driverAddress, 0x12, digit2, digit1, digit0 };
+    SendData(data, 5);
 }
 
 void LedDriver::DisplayNumber(int number)
@@ -127,4 +147,3 @@ void LedDriver::SendData(byte data[], int arraySize)
     digitalWrite(_driverChipSelect, LOW);
     SPI.endTransaction();
 }
-
