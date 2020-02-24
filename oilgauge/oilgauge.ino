@@ -12,8 +12,11 @@
 #define PRESS_LED_EN 1
 #define PRES_DRIVER_EN 2
 
-#define MAX_PRESSURE_VALUES 32
-#define MAX_TEMPERATURE_VALUES 128
+#define MAX_PRESSURE_VALUES 4
+#define MAX_TEMPERATURE_VALUES 4
+
+#define NORMAL_BRIGHTNESS 0x6
+#define WARNING_BRIGHTNESS 0x16
 
 int _temperatureMovingAverage;
 int _pressureMovingAverage;
@@ -49,8 +52,8 @@ void setup()
     _displayTime = millis();
 
     // 0x18 is the max output (24mA)
-    _oilTempLedDriver.SetBrightness(0x01);
-    _oilPressLedDriver.SetBrightness(0x01);
+    _oilTempLedDriver.SetBrightness(NORMAL_BRIGHTNESS);
+    _oilPressLedDriver.SetBrightness(NORMAL_BRIGHTNESS);
 
     _temperatureMovingAverage = _oilTemperatureSensor.GetTemperature();
     _pressureMovingAverage = _oilPressureSensor.GetPressure();
@@ -62,8 +65,8 @@ void FlashDisplayAsRequired(int oilPressure)
 { 
     if (oilPressure <= 15 && (millis() - _displayTime) > 400 && oilPressure > 0)
     {
-        _oilTempLedDriver.SetBrightness(0x16);
-        _oilPressLedDriver.SetBrightness(0x16);
+        _oilTempLedDriver.SetBrightness(WARNING_BRIGHTNESS);
+        _oilPressLedDriver.SetBrightness(WARNING_BRIGHTNESS);
 
         _displayTime = millis();
         return;
@@ -74,8 +77,8 @@ void FlashDisplayAsRequired(int oilPressure)
     }
       
     // Reset the LED brightness
-    _oilTempLedDriver.SetBrightness(0x01);
-    _oilPressLedDriver.SetBrightness(0x01);
+    _oilTempLedDriver.SetBrightness(NORMAL_BRIGHTNESS);
+    _oilPressLedDriver.SetBrightness(NORMAL_BRIGHTNESS);
 }
 
 void loop()
@@ -87,10 +90,10 @@ void loop()
 
     // average = average + (value - average) / min(counter, FACTOR)
     _temperatureMovingAverage = _temperatureMovingAverage + 
-          ((currentTemp - _temperatureMovingAverage) / min(_totalTemperatureValues, MAX_TEMPERATURE_VALUES));
+          round((currentTemp - _temperatureMovingAverage) / min(_totalTemperatureValues, MAX_TEMPERATURE_VALUES));
 
     _pressureMovingAverage = _pressureMovingAverage + 
-          ((currentPressure - _pressureMovingAverage) / min(_totalPressureValues, MAX_PRESSURE_VALUES));
+          round((currentPressure - _pressureMovingAverage) / min(_totalPressureValues, MAX_PRESSURE_VALUES));
   
     _oilTempLedDriver.DisplayNumber(_temperatureMovingAverage);
     _oilPressLedDriver.DisplayNumber(_pressureMovingAverage);
